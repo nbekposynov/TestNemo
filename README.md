@@ -10,4 +10,4 @@
 9. php artisan config:clear
 10.    php artisan cache:clear
 11. Пример Работы Поиска
-  http://localhost:8000/api/airports/search?search=Ла-Брак 
+  http://localhost:8000/api/airports/search?search=Нью
