@@ -1,5 +1,4 @@
 version: '3.8'
-
 services:
   app:
     build:
@@ -25,10 +24,11 @@ services:
     restart: unless-stopped
     tty: true
     ports:
-      - "8080:80"
+      - "8000:80"
     volumes:
       - .:/var/www
       - ./docker/nginx/conf.d:/etc/nginx/conf.d
+      - ./docker/nginx/conf.d/snippets:/etc/nginx/snippets
     networks:
       - app-network
 
@@ -44,6 +44,17 @@ services:
       MYSQL_ROOT_PASSWORD: root
     volumes:
       - mysql_data:/var/lib/mysql
+    networks:
+      - app-network
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.1.3 
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
     networks:
       - app-network
 
