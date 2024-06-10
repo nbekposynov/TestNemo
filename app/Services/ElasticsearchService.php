@@ -15,7 +15,7 @@ class ElasticsearchService
 
     public function searchAirports($search)
     {
-        //Параметры Query Запроса
+        //Параметры Query
         $params = [
             'index' => 'airports',
             'body' => [
