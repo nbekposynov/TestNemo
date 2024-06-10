@@ -2,36 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use Elastic\Elasticsearch\ClientBuilder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use App\Services\ElasticsearchService;
 
 class AirportController extends Controller
 {
+    protected $elasticsearchService;
+
+    public function __construct(ElasticsearchService $elasticsearchService)
+    {
+        $this->elasticsearchService = $elasticsearchService;
+    }
+
     public function search(Request $request)
     {
-        $client = ClientBuilder::create()->setHosts(['elasticsearch:9200'])->build();
         $search = $request->get('search', '');
 
         // Генерируем уникальный ключ для кэша на основе поискового запроса
         $cacheKey = 'airport_search_' . md5($search);
 
         // Попытка получить результаты из кэша
-        $results = Cache::remember($cacheKey, 3600, function () use ($client, $search) {
-            $params = [
-                'index' => 'airports',
-                'body' => [
-                    'query' => [
-                        'multi_match' => [
-                            'query' => $search,
-                            'fields' => ['cityName.en', 'cityName.ru', '_id', 'airportName.ru', 'airportName.en']
-                        ]
-                    ]
-                ]
-            ];
-
-            $response = $client->search($params);
-            return $response['hits']['hits'];
+        $results = Cache::remember($cacheKey, 3600, function () use ($search) {
+            return $this->elasticsearchService->searchAirports($search);
         });
 
         return response()->json($results);
