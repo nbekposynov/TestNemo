@@ -17,5 +17,5 @@ use App\Http\Controllers\AirportController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-
+//Маршрут для метода
 Route::get('/airports/search', [AirportController::class, 'search']);

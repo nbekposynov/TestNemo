@@ -10,6 +10,7 @@ class AirportController extends Controller
 {
     protected $elasticsearchService;
 
+    //Конструктор Сервиса Поиска
     public function __construct(ElasticsearchService $elasticsearchService)
     {
         $this->elasticsearchService = $elasticsearchService;
@@ -19,10 +20,8 @@ class AirportController extends Controller
     {
         $search = $request->get('search', '');
 
-        // Генерируем уникальный ключ для кэша на основе поискового запроса
         $cacheKey = 'airport_search_' . md5($search);
 
-        // Попытка получить результаты из кэша
         $results = Cache::remember($cacheKey, 3600, function () use ($search) {
             return $this->elasticsearchService->searchAirports($search);
         });

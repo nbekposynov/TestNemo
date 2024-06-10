@@ -21,7 +21,7 @@ class AirportController extends Controller
             $params = [
                 'index' => 'airports',
                 'body' => [
-                    '_source' => ['cityName.en', 'cityName.ru', 'id'], // Указываем только нужные поля
+                    '_source' => ['cityName.en', 'cityName.ru', 'id'], // Поля поиска
                     'query' => [
                         'multi_match' => [
                             'query' => $search,
@@ -32,13 +32,13 @@ class AirportController extends Controller
                             ]
                         ]
                     ],
-                    'size' => 10000 // Указываем максимальное количество возвращаемых результатов
+                    'size' => 10000 // Макс число Результатов
                 ]
             ];
 
             $response = $client->search($params);
 
-            // Вывод всех результатов с проверкой наличия полей
+            // Вывод всех результатов с наличием этих полей
             return array_map(function ($hit) {
                 return [
                     'cityName' => $hit['_source']['cityName'] ?? null,

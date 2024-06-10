@@ -7,7 +7,7 @@ use Elastic\Elasticsearch\ClientBuilder;
 class ElasticsearchService
 {
     protected $client;
-
+//Конструктор вызова ElasticSearch
     public function __construct()
     {
         $this->client = ClientBuilder::create()->setHosts(['elasticsearch:9200'])->build();
@@ -15,6 +15,7 @@ class ElasticsearchService
 
     public function searchAirports($search)
     {
+        //Параметры Query Запроса
         $params = [
             'index' => 'airports',
             'body' => [
